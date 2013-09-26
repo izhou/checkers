@@ -27,7 +27,7 @@ class Piece
 	end
 
 	def inspect
-		"#{@color} "  
+		"#{@color} #{@position} "  
 	end
 
 	def slide_moves
