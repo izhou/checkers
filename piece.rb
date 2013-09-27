@@ -37,13 +37,13 @@ class Piece
 	end
 
 	def jump_moves
-		transforms = [[-1,-1], [-1,1], [1,-1], [1,1]]
-		transforms.select! {|x,y| within_board?([x * 2 + position[0], y * 2 + position[1]]) }
+		transforms = [[-2,-2], [-2,2], [2,-2], [2,2]]
+		transforms.select! {|x,y| within_board?([x + position[0], y + position[1]]) }
 		transforms.select! do |x,y| 	
-			jump_over = [x + position[0], y + position[1]] 
+			jump_over = [x/2 + position[0], y/2 + position[1]] 
 			!@board.not_occupied?(jump_over) &&  @board[jump_over].color != @color 
 		end
-		transforms.map{ |x,y| [x * 2 + position[0], y * 2 + position[1]] }
+		transforms.map{ |x,y| [x + position[0], y + position[1]] }
 	end
 
 	def within_board?(pos)

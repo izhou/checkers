@@ -1,8 +1,10 @@
 require 'colorize'
 require './piece.rb'
+require 'debugger'
 
 class Board
 	attr_accessor :grid
+	attr_reader :red_count, :black_count
 	def initialize(grid = blank_grid)
 		@grid = grid
 		fill_grid
@@ -62,41 +64,48 @@ class Board
 	end
 
 	def perform_slide(pos_from, pos_to)
-		raise InvalidMoveError, "invalid move!" unless self[pos_from].slide_moves.include?(pos_to)
+		raise "perform slide" unless self[pos_from].slide_moves.include?(pos_to)
 		self[pos_from], self[pos_to] = nil, self[pos_from]
 	end
 
 	def perform_jump(pos_from, pos_to)
-		raise InvalidMoveError, "invalid move!" unless self[pos_from].jump_moves.include?(pos_to)
+		raise "perform jump" unless self[pos_from].jump_moves.include?(pos_to)
 		self[pos_from], self[pos_to] = nil, self[pos_from]
 		captured_pos = [(pos_from[0] + pos_to[0])/2, (pos_from[1] + pos_to[1])/2]
 		self[captured_pos] = nil
 	end
 
 	def perform_moves(move_seq)
-		raise InvalidMoveError unless valid_move_seq?(move_seq)
+		raise "not a valid move sequence" unless valid_move_seq?(move_seq)
 		perform_moves!(move_seq)
 	end
 
+
 	def perform_moves!(move_seq)
+
 		start = move_seq[0]
 		first_move = move_seq[1]
-
+		
 		if self[start].jump_moves.include?(first_move)
-			until move_seq.length == 1
-				pos_from = move_seq.shift
-				pos_to = move_seq.first
+			(0..move_seq.length - 2).each do |index|
+				pos_from = move_seq[index]
+				pos_to = move_seq[index + 1]
 				perform_jump(pos_from, pos_to)
+				nil
 			end
+			last_pos = move_seq.last
+			raise "you must make all jumps!" unless self[last_pos].jump_moves.empty?
+		#debugger
 		elsif self[start].slide_moves.include?(first_move)
-			raise InvalidMoveError unless move_seq.length == 2 || self[start].king?
-			until move_seq.length == 1
-				pos_from = move_seq.shift
-				pos_to = move_seq.first
-				perform_jump(pos_from, pos_to)
+			raise "can't slide that much!" unless move_seq.length == 2 || self[start].king?
+			(0..move_seq.length - 2).each do |index|
+				pos_from = move_seq[index]
+				pos_to = move_seq[index + 1]
+				perform_slide(pos_from, pos_to)
 			end
+			nil
 		else
-			raise InvalidMoveError
+			raise "Not a valid move"
 		end
 	end
 
@@ -104,9 +113,9 @@ class Board
 		begin
 			copy = self.dup
 			copy.perform_moves!(move_seq)
-			true
+			return true
 		rescue
-			false
+			return false
 		end
 	end
 
@@ -127,44 +136,57 @@ class Board
 	end
 end
 
-class InvalidMoveError < Exception
-end
 
-b = Board.new
 
-# p "perform_slide_test:"
-# b.perform_slide([2,2],[3,3])
-# p b
-# p b[[3,3]].position
-#● ♛ ♕ ○
+# # p "perform_slide_test:"
+# # b.perform_slide([2,2],[3,3])
+# # p b
+# # p b[[3,3]].position
+# #● ♛ ♕ ○
 
 
 
 
-p "perform_valid_move_seq_test:"
-b = Board.new
-#b.render_grid
-#● ♛ ♕ ○
-b.perform_slide([2,0],[3,1])
-b.perform_slide([3,1],[4,2])
-
-#b.render_grid
-
-b.perform_slide([2,2],[3,3])
-b.perform_slide([3,3],[4,4])
-
-
-b.perform_slide([5,5],[4,6])
-
-b.render_grid
-
-move_seq = [[5,1], [3,3], [5,5]]
-#debugger
-p b.valid_move_seq?(move_seq)
+# p "perform_valid_move_seq_test:"
+# b = Board.new
+# #b.render_grid
+# #● ♛ ♕ ○
+# b.perform_slide([2,0],[3,1])
+# print "b:"
+# b.render_grid
+# b_copy = b.dup
+# b.perform_slide([3,1],[4,2])
 
 
 
-#b.render_grid
+# print "b_copy:"
+# b_copy.render_grid
+
+# print "b:"
+# b.render_grid
+
+# print "b_copy:"
+# b_copy.render_grid
+
+# b_copy.perform_slide([3,1],[4,2])
+# print "b_copy:"
+# b_copy.render_grid
+
+#b_copy.perform_slide([2,2],[3,3])
+# b.perform_slide([3,3],[4,4])
+
+
+# b.perform_slide([5,5],[4,6])
+
+# b.render_grid
+
+# move_seq = [[5,1], [3,3], [5,5]]
+# #debugger
+# p b.valid_move_seq?(move_seq)
+
+
+
+# #b.render_grid
 
 
 
