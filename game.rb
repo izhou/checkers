@@ -19,8 +19,8 @@ class Game
         move = @current_player.choose_move
         other_players_piece(move)
         @board.perform_moves(move)
-      rescue
-        puts "Invalid Move"
+      rescue Exception => e
+        puts e.message
         retry
       end
     end
@@ -28,7 +28,7 @@ class Game
   end
 
   def other_players_piece(move)
-    raise "not your piece" unless @board[move.first].color == @current_player.color
+    raise "Not your piece!" unless @board[move.first].color == @current_player.color
   end
  
   def game_over?

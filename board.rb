@@ -43,19 +43,17 @@ class Board
   end
 
   def perform_slide(pos_from, pos_to)
-    raise "perform slide" unless self[pos_from].slide_moves.include?(pos_to)
     self[pos_from], self[pos_to] = nil, self[pos_from]
   end
 
   def perform_jump(pos_from, pos_to)
-    raise "perform jump" unless self[pos_from].jump_moves.include?(pos_to)
     self[pos_from], self[pos_to] = nil, self[pos_from]
     captured_pos = [(pos_from[0] + pos_to[0])/2, (pos_from[1] + pos_to[1])/2]
     self[captured_pos] = nil
   end
 
   def perform_moves(move_seq)
-    raise "not a valid move sequence" unless valid_move_seq?(move_seq)
+    raise "Not a valid move sequence" unless valid_move_seq?(move_seq)
     perform_moves!(move_seq)
   end
 
@@ -64,7 +62,8 @@ class Board
       copy = self.dup
       copy.perform_moves!(move_seq)
       return true
-    rescue
+    rescue InvalidMoveError => e
+      puts e.message
       return false
     end
   end
@@ -79,15 +78,15 @@ class Board
         nil
       end
       last_pos = move_seq.last
-      raise "you must make all jumps!" unless self[last_pos].jump_moves.empty?
+      raise "You must make all jumps!" unless self[last_pos].jump_moves.empty?
 
     elsif self[start].slide_moves.include?(first_move)
-      raise "too many moves!" unless move_seq.length == 2
+      raise "Not a valid slide." unless move_seq.length == 2
       pos_from, pos_to = move_seq.first, move_seq.last
       perform_slide(pos_from, pos_to)
       nil
     else
-      raise "Not a valid move"
+      raise "Not a valid move."
     end
     king_piece(move_seq)
   end
