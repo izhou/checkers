@@ -16,15 +16,18 @@ class Game
 			begin
 				@board.render_grid
 				move = @current_player.choose_move
-				raise InvalidMoveError unless @board[move.first].color == @current_player.color
+				other_players_piece(move)
 				@board.perform_moves(move)
 			rescue
 				puts "Invalid Move"
 				retry
 			end
-
 		end
-		" Congratulations, #{@current_player.color.to_s.capitalize} has won!"
+		"Congratulations, #{@current_player.color.to_s.capitalize} has won!"
+	end
+
+	def other_players_piece(move)
+		raise "not your piece" unless @board[move.first].color == @current_player.color
 	end
  
 	def game_over?

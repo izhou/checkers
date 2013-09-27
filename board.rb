@@ -95,7 +95,6 @@ class Board
 			end
 			last_pos = move_seq.last
 			raise "you must make all jumps!" unless self[last_pos].jump_moves.empty?
-		#debugger
 		elsif self[start].slide_moves.include?(first_move)
 			raise "can't slide that much!" unless move_seq.length == 2 || self[start].king?
 			(0..move_seq.length - 2).each do |index|
@@ -106,6 +105,15 @@ class Board
 			nil
 		else
 			raise "Not a valid move"
+		end
+		king_piece(move_seq)
+	end
+
+	def king_piece(move_seq)
+		if self[start].color = :black
+			self[move_seq.last].king if move_seq.map(&:last).include?(0)
+		else
+			self[move_seq.last].king if move_seq.map(&:last).include?(7)
 		end
 	end
 
@@ -126,7 +134,11 @@ class Board
 		@grid.each do |row|
 			row_copy = []
 			row.each do |tile|
-				tile.nil? ? row_copy << nil : row_copy << Piece.new( board_copy, tile.color, tile.position)
+				if tile.nil?
+					row_copy << nil
+				else
+					row_copy << Piece.new( board_copy, tile.color, tile.position)
+				end
 			end
 			grid_copy << row_copy
 		end
@@ -135,60 +147,3 @@ class Board
 		board_copy
 	end
 end
-
-
-
-# # p "perform_slide_test:"
-# # b.perform_slide([2,2],[3,3])
-# # p b
-# # p b[[3,3]].position
-# #● ♛ ♕ ○
-
-
-
-
-# p "perform_valid_move_seq_test:"
-# b = Board.new
-# #b.render_grid
-# #● ♛ ♕ ○
-# b.perform_slide([2,0],[3,1])
-# print "b:"
-# b.render_grid
-# b_copy = b.dup
-# b.perform_slide([3,1],[4,2])
-
-
-
-# print "b_copy:"
-# b_copy.render_grid
-
-# print "b:"
-# b.render_grid
-
-# print "b_copy:"
-# b_copy.render_grid
-
-# b_copy.perform_slide([3,1],[4,2])
-# print "b_copy:"
-# b_copy.render_grid
-
-#b_copy.perform_slide([2,2],[3,3])
-# b.perform_slide([3,3],[4,4])
-
-
-# b.perform_slide([5,5],[4,6])
-
-# b.render_grid
-
-# move_seq = [[5,1], [3,3], [5,5]]
-# #debugger
-# p b.valid_move_seq?(move_seq)
-
-
-
-# #b.render_grid
-
-
-
-
-

@@ -14,7 +14,7 @@ class Piece
 	end
 
 	def king?
-		@king == true
+		!!@king
 	end
 
 
@@ -51,7 +51,4 @@ class Piece
 		x >= 0 && y >= 0 && x < 8 && y < 8
 	end
 
-end
-
-class KingPiece
 end
