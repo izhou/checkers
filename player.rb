@@ -14,8 +14,4 @@ class Player
 			retry
 		end
 	end
-
 end
-
-
-

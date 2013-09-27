@@ -1,5 +1,6 @@
 require './board.rb'
 require './player.rb'
+require 'debugger'
 
 
 class Game
@@ -42,6 +43,3 @@ end
 
 g = Game.new
 g.play
-
-
-
