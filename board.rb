@@ -1,6 +1,5 @@
 require 'colorize'
 require './piece.rb'
-require 'debugger'
 
 class Board
   attr_accessor :grid
@@ -9,6 +8,8 @@ class Board
   def initialize(grid = blank_grid)
     @grid = grid
     fill_grid
+    @black_count = 12
+    @red_count = 12
   end
 
   def blank_grid
@@ -50,6 +51,7 @@ class Board
     self[pos_from], self[pos_to] = nil, self[pos_from]
     captured_pos = [(pos_from[0] + pos_to[0])/2, (pos_from[1] + pos_to[1])/2]
     self[captured_pos] = nil
+    self[captured_pos].color == :black ? @black_count -= 1 : @red_count -=1 
   end
 
   def perform_moves(move_seq)

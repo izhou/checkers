@@ -7,6 +7,7 @@ class Piece
     @board = board
     @position = position
     @king = king
+
   end
 
   def inspect

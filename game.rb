@@ -1,7 +1,5 @@
 require './board.rb'
 require './player.rb'
-require 'debugger'
-
 
 class Game
   def initialize
@@ -36,10 +34,8 @@ class Game
   end
 end
 
-
 class InvalidMoveError < Exception
 end
-
 
 g = Game.new
 g.play
